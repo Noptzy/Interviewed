@@ -1,0 +1,37 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+language: typescript
+
+tasks:
+  install:
+    description: 'Install frontend deps via pnpm'
+    command: 'pnpm'
+    args:
+      - 'install'
+      - '--prefer-offline'
+    options:
+      runInCI: false
+
+  dev:
+    description: 'Start Vite dev server on :5173'
+    command: 'pnpm'
+    args:
+      - 'dev'
+    deps:
+      - 'install'
+    options:
+      runInCI: false
+
+  build:
+    description: 'Build frontend for production'
+    command: 'pnpm'
+    args:
+      - 'build'
+    outputs:
+      - 'dist/**'
+
+  lint:
+    description: 'Lint frontend'
+    command: 'pnpm'
+    args:
+      - 'lint'
