@@ -1,0 +1,27 @@
+# Env
+.env
+.env.local
+*.local
+
+# Java / Maven
+backend/target/
+*.class
+*.log
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Moonrepo
+.moon/cache/
+.moon/docker/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# OMC
+.omc/state/
