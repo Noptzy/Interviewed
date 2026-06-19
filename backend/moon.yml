@@ -1,0 +1,28 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+language: java
+
+tasks:
+  dev:
+    description: 'Start Spring Boot backend on :8080'
+    command: 'mvn'
+    args:
+      - 'spring-boot:run'
+    options:
+      runInCI: false
+
+  build:
+    description: 'Build backend JAR'
+    command: 'mvn'
+    args:
+      - 'package'
+      - '-DskipTests'
+      - '-q'
+    outputs:
+      - 'target/*.jar'
+
+  test:
+    description: 'Run backend tests'
+    command: 'mvn'
+    args:
+      - 'test'

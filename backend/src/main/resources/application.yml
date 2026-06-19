@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: interviewed
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:interviewed}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:interviewed}
+    password: ${DB_PASSWORD:interviewed}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  ai:
+    openai:
+      api-key: ${OPENROUTER_API_KEY:}
+      base-url: ${OPENROUTER_BASE_URL:https://openrouter.ai/api}
+      chat:
+        options:
+          model: ${OPENROUTER_MODEL:openai/gpt-4o-mini}
+          temperature: 0.4
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+springdotenv:
+  directory: ${SPRINGDOTENV_DIRECTORY:..}
+  ignoreIfMissing: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+app:
+  cors:
+    allowed-origins: ${FRONTEND_ORIGIN:http://localhost:5173}
+  apify:
+    token: ${APIFY_TOKEN:}
+    actor: ${APIFY_ACTOR:curious_coder~linkedin-jobs-scraper}
+    linkedin-profile-actor: ${APIFY_LINKEDIN_PROFILE_ACTOR:apimaestro~linkedin-profile-detail}
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss} [%X{requestId}] [%X{userId}] %-5level %logger{36} - %msg%n"
+  level:
+    com.interviewed: INFO
+    org.springframework.security: WARN
