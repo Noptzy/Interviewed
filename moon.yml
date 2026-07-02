@@ -2,28 +2,28 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 
 tasks:
   start:
-    description: 'Build all then run backend (jar) + frontend (preview) in parallel'
+    description: 'Build all then run api (jar) + web (preview) in parallel'
     deps:
-      - 'backend:build'
-      - 'frontend:build'
+      - 'api:build'
+      - 'web:build'
     options:
       runInCI: false
 
-  start:backend:
-    description: 'Run built backend JAR'
+  start:api:
+    description: 'Run built api JAR'
     command: 'java'
     args:
       - '-jar'
-      - 'backend/target/interviewed-0.0.1-SNAPSHOT.jar'
+      - 'apps/api/target/interviewed-0.0.1-SNAPSHOT.jar'
     deps:
-      - 'backend:build'
+      - 'api:build'
 
-  start:frontend:
-    description: 'Serve built frontend via vite preview'
+  start:web:
+    description: 'Serve built web via vite preview'
     command: 'pnpm'
     args:
       - 'preview'
     options:
-      cwd: 'frontend'
+      cwd: 'apps/web'
     deps:
-      - 'frontend:build'
+      - 'web:build'

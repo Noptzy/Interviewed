@@ -19,8 +19,17 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7.4-alpine
+    container_name: interviewed-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - interviewed_redis_data:/data
+
   backend:
-    build: ./backend
+    build: ./apps/api
     container_name: interviewed-backend
     restart: unless-stopped
     env_file: .env
@@ -28,21 +37,29 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       SERVER_PORT: 8080
     ports:
-      - "8080:8080"
+      - "${API_PORT:-8080}:8080"
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./apps/web
+      args:
+        VITE_API_BASE_URL: http://localhost:${API_PORT:-8080}
     container_name: interviewed-frontend
     restart: unless-stopped
     ports:
-      - "5173:80"
+      - "5173:5173"
     depends_on:
       - backend
 
 volumes:
   interviewed_mysql_data:
+  interviewed_redis_data:
