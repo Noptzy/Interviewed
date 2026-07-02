@@ -1,8 +1,8 @@
 $schema: 'https://moonrepo.dev/schemas/workspace.json'
 
 projects:
-  - 'backend'
-  - 'frontend'
+  api: 'apps/api'
+  web: 'apps/web'
 
 vcs:
   defaultBranch: main

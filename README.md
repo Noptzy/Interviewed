@@ -4,7 +4,7 @@ Interviewed adalah aplikasi yang membantu pengguna memahami peluang karier merek
 
 Alih-alih hanya memberikan skor ATS, Interviewed bertindak seperti recruiter pribadi berbasis AI yang mengenal kandidat melalui CV, LinkedIn, dan percakapan singkat.
 
-Pengguna cukup masuk menggunakan akun Google, mengunggah CV atau memasukkan tautan LinkedIn, lalu AI akan mulai mengenali pengalaman, keterampilan, dan proyek yang pernah dikerjakan.
+Pengguna cukup masuk menggunakan email dan password, mengunggah CV atau memasukkan tautan LinkedIn, lalu AI akan mulai mengenali pengalaman, keterampilan, dan proyek yang pernah dikerjakan.
 
 Setelah itu, AI akan melakukan interview singkat layaknya recruiter sungguhan untuk menggali informasi yang mungkin belum tertulis di CV. Hasil percakapan tersebut digunakan untuk membentuk profil kandidat yang lebih lengkap.
 
@@ -12,7 +12,7 @@ Berdasarkan profil tersebut, sistem akan mencari lowongan pekerjaan yang relevan
 
 ## Alur Penggunaan
 
-1. Masuk menggunakan akun Google.
+1. Masuk menggunakan email dan password.
 2. Unggah CV atau masukkan tautan LinkedIn.
 3. AI membaca dan memahami profil pengguna.
 4. AI melakukan interview singkat mengenai pengalaman dan portofolio.
@@ -47,10 +47,10 @@ Interviewed bukan pengganti recruiter atau jaminan diterima bekerja. Sistem ini 
 ### Opsi 1 — Moonrepo (direkomendasikan, paralel)
 
 ```bash
-# 1. Nyalakan MySQL (sekali, background)
-docker compose up mysql -d
+# 1. Nyalakan MySQL + Redis (sekali, background)
+docker compose up mysql redis -d
 
-# 2. Jalankan backend + frontend secara paralel
+# 2. Jalankan api + web secara paralel
 moon run :dev
 ```
 
@@ -67,10 +67,10 @@ moon run :start        # production mode: build semua dulu, lalu jalankan JAR + 
 moon run :build        # hanya build backend + frontend
 moon run :test         # jalankan backend tests
 moon run :lint         # lint frontend
-moon run backend:dev   # hanya backend dev server
-moon run frontend:dev  # hanya frontend dev (auto-install deps via pnpm)
-moon run start:backend # jalankan backend dari JAR hasil build
-moon run start:frontend# serve frontend dari dist/ via vite preview
+moon run api:dev       # hanya backend dev server
+moon run web:dev       # hanya frontend dev (auto-install deps via pnpm)
+moon run start:api     # jalankan backend dari JAR hasil build
+moon run start:web     # serve frontend dari dist/ via vite preview
 ```
 
 ### Mode Dev vs Production
@@ -84,21 +84,21 @@ moon run start:frontend# serve frontend dari dist/ via vite preview
 docker compose up -d --build
 ```
 
-MySQL + backend + frontend otomatis nyala. Frontend di http://localhost:5173, API di http://localhost:8080.
+MySQL + Redis + backend + frontend otomatis nyala. Frontend di http://localhost:5173, API di http://localhost:8080.
 
 ### Opsi 3 — Manual (tanpa moon)
 
 Terminal 1 — backend (pastikan MySQL sudah jalan):
 
 ```bash
-cd backend
+cd apps/api
 mvn spring-boot:run
 ```
 
 Terminal 2 — frontend:
 
 ```bash
-cd frontend
+cd apps/web
 pnpm install
 pnpm dev
 ```
@@ -111,12 +111,20 @@ Salin `.env.example` ke `.env` lalu isi kredensial:
 cp .env.example .env
 ```
 
-Wajib diisi sebelum fitur AI/OAuth/Apify bisa dipakai: `OPENROUTER_API_KEY`, `APIFY_TOKEN`, `APIFY_LINKEDIN_PROFILE_ACTOR`.
+Wajib diisi sebelum fitur AI/Apify bisa dipakai: `OPENROUTER_API_KEY`, `APIFY_TOKEN`, `APIFY_LINKEDIN_PROFILE_ACTOR`.
 
-MySQL otomatis di-setup via `docker compose up mysql -d`. Schema dijalankan oleh Flyway saat backend start.
+MySQL dan Redis otomatis di-setup via `docker compose up mysql redis -d`. Schema dibuat oleh Hibernate saat backend start.
+
+Auth memakai JWT access token pendek dan refresh token yang disimpan di Redis. Seed account tersedia untuk demo:
+
+- `user@gmail.com` / `user12345`
+- `admin@gmail.com` / `admin12345`
 
 ### Catatan
 
 - File CV yang bukan resume/kata kunci CV akan otomatis terdeteksi dan muncul warning banner di UI sebelum analisis AI.
 - Frontend pakai Vite + React 19 + GSAP untuk animasi.
-- Backend pakai Spring Boot 3.5 + Spring AI (OpenRouter) + Spring Data JPA.
+- Backend pakai Spring Boot 3.5 + Spring AI (OpenRouter) + Spring Data JPA + Redis.
+- Admin dapat mengelola user, global AI settings, daftar model, dan melihat chart distribusi interest.
+
+
