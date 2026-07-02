@@ -8,6 +8,7 @@ export interface CurrentUser {
   id: number
   email: string
   name: string
+  role: 'USER' | 'ADMIN'
   isProfileCompleted: boolean
 }
 
@@ -15,6 +16,9 @@ export interface AuthResponse {
   id: number
   email: string
   name: string
+  role: 'USER' | 'ADMIN'
+  accessToken: string
+  refreshToken: string
 }
 
 export interface ProfileResponse {
@@ -61,13 +65,42 @@ export interface RecommendationResponse {
   gaps: string
 }
 
-export interface SettingsResponse {
-  userId: number
-  model: string | null
-  temperature: number | null
-}
-
 export interface ModelOption {
   id: string
   label: string
+}
+
+export interface AdminUser {
+  id: number
+  email: string
+  name: string
+  role: 'USER' | 'ADMIN'
+}
+
+export interface InterestStat {
+  skill: string
+  count: number
+}
+
+export interface DailyCount {
+  date: string
+  count: number
+}
+
+export interface OverviewStats {
+  totalUsers: number
+  totalAdmins: number
+  totalSessions: number
+  completedSessions: number
+  totalRecommendations: number
+  completedProfiles: number
+  totalProfiles: number
+  signups: DailyCount[]
+  sessions: DailyCount[]
+}
+
+export interface GlobalSettings {
+  model: string
+  temperature: number
+  systemPrompt: string
 }

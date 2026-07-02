@@ -8,6 +8,11 @@ const backendTarget = process.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   envDir: path.resolve(__dirname, '..'),
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
   server: {
     port: 5173,
     proxy: {
